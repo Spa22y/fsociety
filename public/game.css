@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: white;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+    background-color: #000;
+    border-bottom: 2px solid #333;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3em;
+    color: #4CAF50; /* Green highlight */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.back-button {
+    float: left;
+    color: #ccc;
+    text-decoration: none;
+    padding: 10px;
+}
+
+/* --- Level Selector Styling --- */
+#level-selector {
+    padding: 40px 20px;
+}
+
+.level-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.level-card {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 3px solid #555;
+}
+
+.level-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.level-card h3 {
+    margin-top: 0;
+}
+
+.level-card p {
+    font-style: italic;
+    color: #aaa;
+}
+
+.stars {
+    font-size: 1.5em;
+    color: gold;
+    margin-top: 10px;
+}
+
+/* Difficulty Colors */
+.easy { border-color: #4CAF50; /* Green */ }
+.medium { border-color: #FFC107; /* Yellow */ }
+.hard { border-color: #F44336; /* Red */ }
+
+/* --- Game Canvas Styling --- */
+#gameCanvas {
+    background-color: #111;
+    border: 5px solid #000;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    display: block; /* Removes any extra space below the canvas */
+    margin: 20px auto;
+}
+
+#controls {
+    font-size: 1.1em;
+    color: #aaa;
+}

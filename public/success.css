@@ -105,8 +105,8 @@ h2 {
 /* Logout Button */
 .logout-btn {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    top: 20px;
+    left: 20px;
     padding: 10px 25px;
     background-color: #003322;
     border: 1px solid #0f0;
@@ -212,4 +212,5 @@ h2 {
 .cancel-btn:hover {
     background-color: #00FF66;
     color: #003322;
+
 }

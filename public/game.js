@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const LEVELS = {
         1: [
-            { x: 400, y: 390, type: 'spike' },    // Changed from 360 to 390 (ground level)
-            { x: 700, y: 390, type: 'spike' },
-            { x: 1000, y: 390, type: 'spike' },
-            { x: 1400, y: 390, type: 'spike' },
-            { x: 1800, y: 390, type: 'spike' }
+            { x: 450, y: 390, type: 'spike' },    // Changed from 360 to 390 (ground level)
+            { x: 800, y: 390, type: 'spike' },
+            { x: 1100, y: 390, type: 'spike' },
+            { x: 1500, y: 390, type: 'spike' },
+            { x: 1875, y: 390, type: 'spike' }
         ],
         2: [
             { x: 300, y: 390, type: 'spike' }, 
@@ -283,3 +283,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gameLoop();
 });
+

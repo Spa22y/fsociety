@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>fsociety | Admin Dashboard</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="success.css">
     <link rel="website icon" type="png" href="avira_blog_mr.robot-fsociety.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,7 +31,7 @@
         }
 
         .admin-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -131,6 +131,38 @@
             color: #00FF66;
         }
 
+        .kicked-status {
+            color: #FF5555;
+            font-weight: bold;
+        }
+
+        .active-status {
+            color: #00FF66;
+        }
+
+        .kick-btn {
+            background-color: #FF5555;
+            border: 1px solid #FF5555;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            font-size: 1.5em;
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .kick-btn:hover {
+            background-color: #ff3333;
+        }
+
+        .kick-btn:disabled {
+            background-color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
         .clear-btn {
             background-color: #FF5555;
             border: 1px solid #FF5555;
@@ -171,20 +203,6 @@
     </style>
 </head>
 <body>
-    <!--Floating binary numbers-->
-    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
-    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
-    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
-    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
-    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
-    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
-    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
-    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
-    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
-    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
-    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
-    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
-    
     <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
 
     <div class="admin-container">
@@ -195,6 +213,10 @@
 
         <div class="stats-grid">
             <div class="stat-box">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-number" id="activeUsers">0</div>
+            </div>
+            <div class="stat-box">
                 <div class="stat-label">Total Logins</div>
                 <div class="stat-number" id="totalLogins">0</div>
             </div>
@@ -203,13 +225,27 @@
                 <div class="stat-number" id="userLogins">0</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Admin Logins</div>
-                <div class="stat-number" id="adminLogins">0</div>
-            </div>
-            <div class="stat-box">
                 <div class="stat-label">Games Played</div>
                 <div class="stat-number" id="gamesPlayed">0</div>
             </div>
+        </div>
+
+        <div class="logs-section">
+            <h3>Active Users (Live)</h3>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>Type</th>
+                        <th>Connected At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="activeUsersList">
+                    <tr><td colspan="5" style="text-align: center;">No active users</td></tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="logs-section">
@@ -247,28 +283,50 @@
         </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script>
-        function loadDashboard() {
-            // Load login logs
-            const accessLogs = JSON.parse(localStorage.getItem('accessLogs') || '[]');
-            const gameLogs = JSON.parse(localStorage.getItem('gameLogs') || '[]');
+        const socket = io('https://fsociety-g10b.onrender.com');
 
-            // Calculate stats
-            const totalLogins = accessLogs.length;
-            const userLogins = accessLogs.filter(log => !log.isAdmin).length;
-            const adminLogins = accessLogs.filter(log => log.isAdmin).length;
-            const gamesPlayed = gameLogs.length;
+        // Request initial data
+        socket.emit('request-user-list');
 
-            // Update stats
-            document.getElementById('totalLogins').textContent = totalLogins;
-            document.getElementById('userLogins').textContent = userLogins;
-            document.getElementById('adminLogins').textContent = adminLogins;
-            document.getElementById('gamesPlayed').textContent = gamesPlayed;
+        // Update active users list
+        socket.on('user-list-update', (users) => {
+            const activeUsersTable = document.getElementById('activeUsersList');
+            const activeCount = users.filter(u => !u.kicked).length;
+            document.getElementById('activeUsers').textContent = activeCount;
 
-            // Populate login table
+            if (users.length > 0) {
+                activeUsersTable.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.sessionId}</td>
+                        <td class="${user.type === 'Admin' ? 'admin-type' : 'user-type'}">${user.type}</td>
+                        <td>${user.timestamp}</td>
+                        <td class="${user.kicked ? 'kicked-status' : 'active-status'}">
+                            ${user.kicked ? 'KICKED' : 'ACTIVE'}
+                        </td>
+                        <td>
+                            <button class="kick-btn" 
+                                    onclick="kickUser('${user.sessionId}')"
+                                    ${user.kicked ? 'disabled' : ''}>
+                                ${user.kicked ? 'KICKED' : 'KICK'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                activeUsersTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">No active users</td></tr>';
+            }
+        });
+
+        // Update login history
+        socket.on('login-history-update', (history) => {
             const loginTable = document.getElementById('loginLogs');
-            if (accessLogs.length > 0) {
-                loginTable.innerHTML = accessLogs.map((log, index) => `
+            document.getElementById('totalLogins').textContent = history.length;
+            document.getElementById('userLogins').textContent = history.filter(h => !h.isAdmin).length;
+
+            if (history.length > 0) {
+                loginTable.innerHTML = history.map((log, index) => `
                     <tr>
                         <td>${index + 1}</td>
                         <td class="${log.isAdmin ? 'admin-type' : 'user-type'}">${log.type}</td>
@@ -278,11 +336,15 @@
             } else {
                 loginTable.innerHTML = '<tr><td colspan="3" style="text-align: center;">No login data available</td></tr>';
             }
+        });
 
-            // Populate game table
+        // Update game history
+        socket.on('game-history-update', (history) => {
             const gameTable = document.getElementById('gameLogs');
-            if (gameLogs.length > 0) {
-                gameTable.innerHTML = gameLogs.map((log, index) => `
+            document.getElementById('gamesPlayed').textContent = history.length;
+
+            if (history.length > 0) {
+                gameTable.innerHTML = history.map((log, index) => `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${log.game}</td>
@@ -292,29 +354,25 @@
             } else {
                 gameTable.innerHTML = '<tr><td colspan="3" style="text-align: center;">No game data available</td></tr>';
             }
+        });
+
+        function kickUser(sessionId) {
+            if (confirm(`Are you sure you want to kick user ${sessionId}?`)) {
+                socket.emit('kick-user', sessionId);
+            }
         }
 
         function clearLoginLogs() {
             if (confirm('Are you sure you want to clear all login history?')) {
-                localStorage.removeItem('accessLogs');
-                loadDashboard();
+                socket.emit('clear-login-history');
             }
         }
 
         function clearGameLogs() {
             if (confirm('Are you sure you want to clear all game history?')) {
-                localStorage.removeItem('gameLogs');
-                loadDashboard();
+                socket.emit('clear-game-history');
             }
         }
-
-        // Load dashboard on page load
-        loadDashboard();
-
-        // Auto-refresh every 5 seconds
-        setInterval(loadDashboard, 5000);
     </script>
 </body>
-
 </html>
-

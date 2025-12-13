@@ -50,7 +50,7 @@
 
         <div class="grid">
             <div class="box" onclick="trackGame('Game 01')">
-                <div class="box-header">HTML Dash</div>
+                <div class="box-header">Game 01</div>
             </div>
             <div class="box" onclick="trackGame('Game 02')">
                 <div class="box-header">Game 02</div>
@@ -98,6 +98,29 @@
             return localStorage.getItem('sessionId') || 'unknown';
         }
 
+        // Send login event when page loads
+        socket.on('connect', () => {
+            console.log('Socket connected on success page');
+            
+            // Check if this is a fresh login
+            if (localStorage.getItem('pendingLogin') === 'true') {
+                const sessionId = getSessionId();
+                const loginType = localStorage.getItem('loginType');
+                
+                socket.emit('user-login', {
+                    sessionId: sessionId,
+                    userType: loginType === 'admin' ? 'Admin' : 'User',
+                    isAdmin: loginType === 'admin'
+                });
+                
+                // Clear pending login flag
+                localStorage.removeItem('pendingLogin');
+                localStorage.removeItem('loginType');
+                
+                console.log('User login sent:', sessionId);
+            }
+        });
+
         function showLogoutModal() {
             document.getElementById('logoutModal').style.display = 'flex';
         }
@@ -107,6 +130,7 @@
         }
 
         function logout() {
+            socket.disconnect();
             window.location.href = 'index.html';
         }
 
@@ -127,11 +151,9 @@
         socket.on('you-are-kicked', () => {
             alert('You have been kicked by an administrator!');
             localStorage.removeItem('sessionId');
+            socket.disconnect();
             window.location.href = './index.html';
         });
     </script>
 </body>
 </html>
-
-
-

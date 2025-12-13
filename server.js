@@ -33,7 +33,10 @@ io.on('connection', (socket) => {
   socket.on('user-login', (data) => {
     const sessionId = data.sessionId;
     const userType = data.userType;
-    const timestamp = new Date().toLocaleString();
+    const timestamp = new Date().toLocaleString('de-DE', { 
+      timeZone: 'Europe/Berlin',
+      hour12: false 
+    });
 
     // Add to active users
     activeUsers.set(sessionId, {
@@ -64,7 +67,10 @@ io.on('connection', (socket) => {
 
   // Game access tracking
   socket.on('game-access', (data) => {
-    const timestamp = new Date().toLocaleString();
+    const timestamp = new Date().toLocaleString('de-DE', { 
+      timeZone: 'Europe/Berlin',
+      hour12: false 
+    });
     gameHistory.push({
       game: data.game,
       sessionId: data.sessionId,

@@ -50,7 +50,7 @@
 
         <div class="grid">
             <div class="box" onclick="trackGame('Game 01')">
-                <div class="box-header">HTML Dash</div>
+                <div class="box-header">Game 01</div>
             </div>
             <div class="box" onclick="trackGame('Game 02')">
                 <div class="box-header">Game 02</div>
@@ -90,7 +90,14 @@
         </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script>
+        const socket = io('https://fsociety-g10b.onrender.com');
+
+        function getSessionId() {
+            return localStorage.getItem('sessionId') || 'unknown';
+        }
+
         function showLogoutModal() {
             document.getElementById('logoutModal').style.display = 'flex';
         }
@@ -104,22 +111,24 @@
         }
 
         function trackGame(gameName) {
-            // Log game access
-            const now = new Date();
-            const timestamp = now.toLocaleString();
+            const sessionId = getSessionId();
             
-            let gameLogs = JSON.parse(localStorage.getItem('gameLogs') || '[]');
-            gameLogs.push({
+            socket.emit('game-access', {
                 game: gameName,
-                timestamp: timestamp
+                sessionId: sessionId
             });
-            localStorage.setItem('gameLogs', JSON.stringify(gameLogs));
             
-            // Then go to the game page
-            window.location.href = 'HTML Dash.html';
+            setTimeout(() => {
+                window.location.href = 'test.html';
+            }, 100);
         }
+
+        // Listen for kick command
+        socket.on('you-are-kicked', () => {
+            alert('You have been kicked by an administrator!');
+            localStorage.removeItem('sessionId');
+            window.location.href = './index.html';
+        });
     </script>
 </body>
-
 </html>
-

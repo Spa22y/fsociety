@@ -1,6 +1,19 @@
+// Connect to backend
+const socket = io('https://fsociety-g10b.onrender.com');
+
+// Generate unique session ID
+function getSessionId() {
+    let sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+        sessionId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('sessionId', sessionId);
+    }
+    return sessionId;
+}
+
 function checkPassword() {
     const regularPassword = "@fsociety00";
-    const adminPassword = "#Adm1n_$yn@pse!2025"; // Hard to guess admin password
+    const adminPassword = "#Adm1n_$yn@pse!2025";
     const inputField = document.getElementById("pwd");
     const inputValue = inputField.value.trim();
     const errorMsg = document.getElementById("error-msg");
@@ -13,12 +26,28 @@ function checkPassword() {
         }, 3000);
     } else if (inputValue === adminPassword) {
         // Log admin access
-        logAccess("Admin", true);
-        window.location.href = "./admin.html";
+        const sessionId = getSessionId();
+        socket.emit('user-login', {
+            sessionId: sessionId,
+            userType: 'Admin',
+            isAdmin: true
+        });
+        
+        setTimeout(() => {
+            window.location.href = "./admin.html";
+        }, 200);
     } else if (inputValue === regularPassword) {
         // Log regular user access
-        logAccess("User", false);
-        window.location.href = "./success.html";
+        const sessionId = getSessionId();
+        socket.emit('user-login', {
+            sessionId: sessionId,
+            userType: 'User',
+            isAdmin: false
+        });
+        
+        setTimeout(() => {
+            window.location.href = "./success.html";
+        }, 200);
     } else {
         errorMsg.textContent = "Wrong password.";
         errorMsg.style.opacity = 1;
@@ -28,37 +57,9 @@ function checkPassword() {
     }
 }
 
-function logAccess(userType, isAdmin) {
-    const now = new Date();
-    const timestamp = now.toLocaleString();
-    
-    // Get existing logs
-    let accessLogs = JSON.parse(localStorage.getItem('accessLogs') || '[]');
-    
-    // Add new log entry
-    accessLogs.push({
-        type: userType,
-        timestamp: timestamp,
-        isAdmin: isAdmin
-    });
-    
-    // Save back to localStorage
-    localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
-}
-
-function logGameAccess(gameName) {
-    const now = new Date();
-    const timestamp = now.toLocaleString();
-    
-    // Get existing game logs
-    let gameLogs = JSON.parse(localStorage.getItem('gameLogs') || '[]');
-    
-    // Add new game access
-    gameLogs.push({
-        game: gameName,
-        timestamp: timestamp
-    });
-    
-    // Save back to localStorage
-    localStorage.setItem('gameLogs', JSON.stringify(gameLogs));
-}
+// Listen for kick command
+socket.on('you-are-kicked', () => {
+    alert('You have been kicked by an administrator!');
+    localStorage.removeItem('sessionId');
+    window.location.href = './index.html';
+});

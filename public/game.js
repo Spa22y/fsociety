@@ -13,52 +13,52 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 40,
         color: '#00FF66',
         velocity: 0,
-        gravity: 0.8,
-        jumpPower: -15,
+        gravity: 0.5,        // Reduced from 0.8 for smoother jump
+        jumpPower: -12,      // Reduced from -15 for more realistic jump
         isJumping: false
     };
 
-    let gameSpeed = 5;
+    let gameSpeed = 3;       // Reduced from 5 - slower gameplay
     let isGameOver = false;
     let distance = 0;
     let levelComplete = false;
 
     const LEVELS = {
         1: [
-            { x: 400, y: 360, type: 'spike' }, 
-            { x: 700, y: 360, type: 'spike' },
-            { x: 1000, y: 360, type: 'spike' },
-            { x: 1400, y: 360, type: 'spike' },
-            { x: 1800, y: 360, type: 'spike' }
+            { x: 400, y: 390, type: 'spike' },    // Changed from 360 to 390 (ground level)
+            { x: 700, y: 390, type: 'spike' },
+            { x: 1000, y: 390, type: 'spike' },
+            { x: 1400, y: 390, type: 'spike' },
+            { x: 1800, y: 390, type: 'spike' }
         ],
         2: [
-            { x: 300, y: 360, type: 'spike' }, 
-            { x: 340, y: 360, type: 'spike' },
-            { x: 600, y: 360, type: 'spike' },
-            { x: 900, y: 320, type: 'block' },
-            { x: 1200, y: 360, type: 'spike' },
-            { x: 1240, y: 360, type: 'spike' },
-            { x: 1600, y: 360, type: 'spike' },
-            { x: 2000, y: 320, type: 'block' }
+            { x: 300, y: 390, type: 'spike' }, 
+            { x: 340, y: 390, type: 'spike' },
+            { x: 600, y: 390, type: 'spike' },
+            { x: 900, y: 350, type: 'block' },    // Blocks stay higher
+            { x: 1200, y: 390, type: 'spike' },
+            { x: 1240, y: 390, type: 'spike' },
+            { x: 1600, y: 390, type: 'spike' },
+            { x: 2000, y: 350, type: 'block' }
         ],
         3: [
-            { x: 300, y: 360, type: 'spike' },
-            { x: 340, y: 360, type: 'spike' },
-            { x: 380, y: 360, type: 'spike' },
-            { x: 600, y: 320, type: 'block' },
-            { x: 800, y: 360, type: 'spike' },
-            { x: 840, y: 360, type: 'spike' },
-            { x: 1000, y: 300, type: 'block' },
-            { x: 1300, y: 360, type: 'spike' },
-            { x: 1340, y: 360, type: 'spike' },
-            { x: 1380, y: 360, type: 'spike' },
-            { x: 1600, y: 320, type: 'block' },
-            { x: 1900, y: 360, type: 'spike' },
-            { x: 1940, y: 360, type: 'spike' },
-            { x: 2200, y: 300, type: 'block' },
-            { x: 2500, y: 360, type: 'spike' },
-            { x: 2540, y: 360, type: 'spike' },
-            { x: 2580, y: 360, type: 'spike' }
+            { x: 300, y: 390, type: 'spike' },
+            { x: 340, y: 390, type: 'spike' },
+            { x: 380, y: 390, type: 'spike' },
+            { x: 600, y: 350, type: 'block' },
+            { x: 800, y: 390, type: 'spike' },
+            { x: 840, y: 390, type: 'spike' },
+            { x: 1000, y: 330, type: 'block' },
+            { x: 1300, y: 390, type: 'spike' },
+            { x: 1340, y: 390, type: 'spike' },
+            { x: 1380, y: 390, type: 'spike' },
+            { x: 1600, y: 350, type: 'block' },
+            { x: 1900, y: 390, type: 'spike' },
+            { x: 1940, y: 390, type: 'spike' },
+            { x: 2200, y: 330, type: 'block' },
+            { x: 2500, y: 390, type: 'spike' },
+            { x: 2540, y: 390, type: 'spike' },
+            { x: 2580, y: 390, type: 'spike' }
         ]
     };
     

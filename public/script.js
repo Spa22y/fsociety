@@ -11,6 +11,11 @@ function getSessionId() {
     return sessionId;
 }
 
+// Wait for socket connection before logging in
+socket.on('connect', () => {
+    console.log('Socket connected:', socket.id);
+});
+
 function checkPassword() {
     const regularPassword = "@fsociety00";
     const adminPassword = "#Adm1n_$yn@pse!2025";
@@ -25,29 +30,17 @@ function checkPassword() {
             errorMsg.style.opacity = 0;
         }, 3000);
     } else if (inputValue === adminPassword) {
-        // Log admin access
+        // Store login type before redirect
         const sessionId = getSessionId();
-        socket.emit('user-login', {
-            sessionId: sessionId,
-            userType: 'Admin',
-            isAdmin: true
-        });
-        
-        setTimeout(() => {
-            window.location.href = "./admin.html";
-        }, 200);
+        localStorage.setItem('loginType', 'admin');
+        localStorage.setItem('pendingLogin', 'true');
+        window.location.href = "./admin.html";
     } else if (inputValue === regularPassword) {
-        // Log regular user access
+        // Store login type before redirect
         const sessionId = getSessionId();
-        socket.emit('user-login', {
-            sessionId: sessionId,
-            userType: 'User',
-            isAdmin: false
-        });
-        
-        setTimeout(() => {
-            window.location.href = "./success.html";
-        }, 200);
+        localStorage.setItem('loginType', 'user');
+        localStorage.setItem('pendingLogin', 'true');
+        window.location.href = "./success.html";
     } else {
         errorMsg.textContent = "Wrong password.";
         errorMsg.style.opacity = 1;

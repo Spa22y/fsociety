@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Race - Level Select</title>
+
+    <link rel="stylesheet" href="/fxsocy/CSS/click race.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="success.html" class="back-button">← <span data-en="Back to Games" data-de="Zurück zu Spielen">Back to Games</span></a>
+        <h1>CLICK RACE</h1>
+    </header>
+
+    <main class="race-container">
+        <div class="level-select">
+            <h2 data-en="Select Difficulty" data-de="Wähle Schwierigkeit">Select Difficulty</h2>
+            <button onclick="window.location.href='click race game.html?level=1'" data-en="Level 1 - Easy" data-de="Level 1 - Einfach">Level 1 - Easy</button>
+            <button onclick="window.location.href='click race game.html?level=2'" data-en="Level 2 - Medium" data-de="Level 2 - Mittel">Level 2 - Medium</button>
+            <button onclick="window.location.href='click race game.html?level=3'" data-en="Level 3 - Hard" data-de="Level 3 - Schwer">Level 3 - Hard</button>
+            <button onclick="window.location.href='click race game.html?level=4'" data-en="Level 4 - Insane" data-de="Level 4 - Wahnsinnig">Level 4 - Insane</button>
+            <button onclick="window.location.href='click race game.html?level=5'" data-en="Level 5 - Impossible" data-de="Level 5 - Unmöglich">Level 5 - Impossible</button>
+        </div>
+    </main>
+
+    <script>
+        const lang = localStorage.getItem('language') || 'en';
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.textContent = el.getAttribute(`data-${lang}`);
+        });
+    </script>
+</body>
+</html>

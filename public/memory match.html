@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fxsocy | Memory Match</title>
+    <link rel="stylesheet" href="/fxsocy/CSS/memory.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="success.html" class="back-button">← <span data-en="Back to Games" data-de="Zurück zu Spielen">Back to Games</span></a>
+        <h1>MEMORY MATCH</h1>
+    </header>
+
+    <main class="difficulty-container">
+        <h2 data-en="Select Difficulty" data-de="Wähle Schwierigkeit">Select Difficulty</h2>
+        <button class="difficulty-btn" onclick="window.location.href='memory match game.html?difficulty=easy'">
+            <span data-en="Easy (3x3 - 8 tiles)" data-de="Einfach (3x3 - 8 Kacheln)">Easy (3x3 - 9 tiles)</span>
+        </button>
+        <button class="difficulty-btn" onclick="window.location.href='memory match game.html?difficulty=medium'">
+            <span data-en="Medium (4x4 - 16 tiles)" data-de="Mittel (4x4 - 16 Kacheln)">Medium (4x4 - 16 tiles)</span>
+        </button>
+        <button class="difficulty-btn" onclick="window.location.href='memory match game.html?difficulty=hard'">
+            <span data-en="Hard (5x4 - 20 tiles)" data-de="Schwer (5x4 - 20 Kacheln)">Hard (5x4 - 20 tiles)</span>
+        </button>
+    </main>
+
+    <script>
+        const lang = localStorage.getItem('language') || 'en';
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.textContent = el.getAttribute(`data-${lang}`);
+        });
+    </script>
+</body>
+</html>

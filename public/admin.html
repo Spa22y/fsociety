@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fxsocy | Admin Dashboard</title>
+    <link rel="stylesheet" href="/fxsocy/CSS/success.css">
+    <link rel="website icon" type="png" href="/fxsocy/images/fsociety logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-image: 
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 102, 0.1) 0px,
+                    rgba(0, 255, 102, 0.1) 1px,
+                    transparent 1px,
+                    transparent 20px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 255, 102, 0.08) 0px,
+                    rgba(0, 255, 102, 0.08) 1px,
+                    transparent 1px,
+                    transparent 20px
+                );
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-header h1 {
+            font-size: 3.5em;
+            color: #FF5555;
+            margin: 10px 0;
+            line-height: 1;
+        }
+
+        .admin-header h2 {
+            font-size: 2em;
+            color: #00FF66;
+            margin: 5px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #0D1F0D;
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            color: #00FF66;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1.5em;
+            color: #00FF66;
+            opacity: 0.7;
+        }
+
+        .logs-section {
+            background: #0D1F0D;
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logs-section h3 {
+            font-size: 2.5em;
+            color: #00FF66;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 10px;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table th {
+            background: #003322;
+            color: #00FF66;
+            padding: 12px;
+            text-align: left;
+            font-size: 1.8em;
+            border: 1px solid #0f0;
+        }
+
+        .log-table td {
+            padding: 10px 12px;
+            border: 1px solid #0f0;
+            color: #00FF66;
+            font-size: 1.5em;
+        }
+
+        .log-table tr:nth-child(even) {
+            background: rgba(0, 255, 102, 0.05);
+        }
+
+        .admin-type {
+            color: #FF5555;
+            font-weight: bold;
+        }
+
+        .user-type {
+            color: #00FF66;
+        }
+
+        .kicked-status {
+            color: #FF5555;
+            font-weight: bold;
+        }
+
+        .active-status {
+            color: #00FF66;
+        }
+
+        .kick-btn {
+            background-color: #FF5555;
+            border: 1px solid #FF5555;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            font-size: 1.5em;
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .kick-btn:hover {
+            background-color: #ff3333;
+        }
+
+        .kick-btn:disabled {
+            background-color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .clear-btn {
+            background-color: #FF5555;
+            border: 1px solid #FF5555;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            font-size: 1.8em;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .clear-btn:hover {
+            background-color: #ff3333;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #003322;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            color: #00FF66;
+            font-family: 'VT323', monospace;
+            font-size: 1.8em;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background-color: #00FF66;
+            color: #003322;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>ADMIN DASHBOARD</h1>
+            <h2>System Access Monitor</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-number" id="activeUsers">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Logins</div>
+                <div class="stat-number" id="totalLogins">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">User Logins</div>
+                <div class="stat-number" id="userLogins">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Games Played</div>
+                <div class="stat-number" id="gamesPlayed">0</div>
+            </div>
+        </div>
+
+        <div class="logs-section">
+            <h3>Active Users (Live)</h3>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>Type</th>
+                        <th>Connected At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="activeUsersList">
+                    <tr><td colspan="5" style="text-align: center;">No active users</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="logs-section">
+            <h3>Login History</h3>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User Type</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="loginLogs">
+                    <tr><td colspan="3" style="text-align: center;">No login data available</td></tr>
+                </tbody>
+            </table>
+            <button class="clear-btn" onclick="clearLoginLogs()">Clear Login History</button>
+        </div>
+
+        <div class="logs-section">
+            <h3>Game Access History</h3>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Game Name</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="gameLogs">
+                    <tr><td colspan="3" style="text-align: center;">No game data available</td></tr>
+                </tbody>
+            </table>
+            <button class="clear-btn" onclick="clearGameLogs()">Clear Game History</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('https://fsociety-g10b.onrender.com');
+
+        // Request initial data
+        socket.emit('request-user-list');
+
+        // Update active users list
+        socket.on('user-list-update', (users) => {
+            const activeUsersTable = document.getElementById('activeUsersList');
+            const activeCount = users.filter(u => !u.kicked).length;
+            document.getElementById('activeUsers').textContent = activeCount;
+
+            if (users.length > 0) {
+                activeUsersTable.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.sessionId}</td>
+                        <td class="${user.type === 'Admin' ? 'admin-type' : 'user-type'}">${user.type}</td>
+                        <td>${user.timestamp}</td>
+                        <td class="${user.kicked ? 'kicked-status' : 'active-status'}">
+                            ${user.kicked ? 'KICKED' : 'ACTIVE'}
+                        </td>
+                        <td>
+                            <button class="kick-btn" 
+                                    onclick="kickUser('${user.sessionId}')"
+                                    ${user.kicked ? 'disabled' : ''}>
+                                ${user.kicked ? 'KICKED' : 'KICK'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                activeUsersTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">No active users</td></tr>';
+            }
+        });
+
+        // Update login history
+        socket.on('login-history-update', (history) => {
+            const loginTable = document.getElementById('loginLogs');
+            document.getElementById('totalLogins').textContent = history.length;
+            document.getElementById('userLogins').textContent = history.filter(h => !h.isAdmin).length;
+
+            if (history.length > 0) {
+                loginTable.innerHTML = history.map((log, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td class="${log.isAdmin ? 'admin-type' : 'user-type'}">${log.type}</td>
+                        <td>${log.timestamp}</td>
+                    </tr>
+                `).reverse().join('');
+            } else {
+                loginTable.innerHTML = '<tr><td colspan="3" style="text-align: center;">No login data available</td></tr>';
+            }
+        });
+
+        // Update game history
+        socket.on('game-history-update', (history) => {
+            const gameTable = document.getElementById('gameLogs');
+            document.getElementById('gamesPlayed').textContent = history.length;
+
+            if (history.length > 0) {
+                gameTable.innerHTML = history.map((log, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${log.game}</td>
+                        <td>${log.timestamp}</td>
+                    </tr>
+                `).reverse().join('');
+            } else {
+                gameTable.innerHTML = '<tr><td colspan="3" style="text-align: center;">No game data available</td></tr>';
+            }
+        });
+
+        function kickUser(sessionId) {
+            if (confirm(`Are you sure you want to kick user ${sessionId}?`)) {
+                socket.emit('kick-user', sessionId);
+            }
+        }
+
+        function clearLoginLogs() {
+            if (confirm('Are you sure you want to clear all login history?')) {
+                socket.emit('clear-login-history');
+            }
+        }
+
+        function clearGameLogs() {
+            if (confirm('Are you sure you want to clear all game history?')) {
+                socket.emit('clear-game-history');
+            }
+        }
+    </script>
+</body>
+</html>

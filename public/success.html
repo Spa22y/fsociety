@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fxsocy | Main Page</title>
+    <link rel="stylesheet" href="/fxsocy/CSS/success.css">
+    <link rel="website icon" type="png" href="avira_blog_mr.robot-fsociety.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-image: 
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 102, 0.1) 0px,
+                    rgba(0, 255, 102, 0.1) 1px,
+                    transparent 1px,
+                    transparent 20px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 255, 102, 0.08) 0px,
+                    rgba(0, 255, 102, 0.08) 1px,
+                    transparent 1px,
+                    transparent 20px
+                );
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+    <!--Floating binary numbers-->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <div class="content">
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 100;">
+            <select id="langSelect" onchange="changeLanguage()" style="background: #003322; color: #00FF66; border: 2px solid #0f0; padding: 8px; font-family: 'VT323', monospace; font-size: 1.5em; border-radius: 5px; cursor: pointer;">
+                <option value="en">🇺🇸 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+            </select>
+        </div>
+
+        <h1 data-en="Login Successful!" data-de="Anmeldung erfolgreich!">Login Successful!</h1>
+        <h2 data-en="Here are some games you can play!" data-de="Hier sind einige Spiele, die du spielen kannst!">Here are some games you can play!</h2>
+
+        <div class="grid">
+            <div class="box" onclick="trackGame('HTML Dash')">
+                <img src="/fxsocy/images/HTML Dash pic.png" class="box-image" alt="HTML Dash">
+                <div class="box-header">HTML Dash</div>
+                <div class="box-description" data-en="Jump through obstacles!" data-de="Springe durch Hindernisse!">Jump through obstacles!</div>
+            </div>
+            <div class="box" onclick="trackGame('Click Race')">
+                <img src="/fxsocy/images/click race pic.png" class="box-image" alt="Click Race">
+                <div class="box-header">Click Race</div>
+                <div class="box-description" data-en="Click faster than the bot!" data-de="Klicke schneller als der Bot!">Click faster than the bot!</div>
+            </div>
+            <div class="box" onclick="trackGame('Snake')">
+                <img src="/fxsocy/images/snake pic.png" class="box-image" alt="Snake">
+                <div class="box-header">Snake</div>
+                <div class="box-description" data-en="Classic snake game!" data-de="Klassisches Snake-Spiel!">Classic snake game!</div>
+            </div>
+            <div class="box" onclick="trackGame('Memory Match')">
+                <img src="/fxsocy/images/memory match pic.png" class="box-image" alt="Memory Match">
+                <div class="box-header">Memory Match</div>
+                <div class="box-description" data-en="Match the cards!" data-de="Finde die Paare!">Match the cards!</div>
+            </div>
+            <div class="box" onclick="trackGame('Pong')">
+                <img src="/fxsocy/images/pong pic.png" class="box-image" alt="Pong">
+                <div class="box-header">Pong</div>
+                <div class="box-description" data-en="Classic 2-player pong!" data-de="Klassisches 2-Spieler Pong!">Classic 2-player pong!</div>
+            </div>
+            <div class="box" onclick="trackGame('Breakout')">
+                <img src="/fxsocy/images/breakout pic.png" class="box-image" alt="Breakout">
+                <div class="box-header">Breakout</div>
+                <div class="box-description" data-en="Break all the bricks!" data-de="Zerstöre alle Steine!">Break all the bricks!</div>
+            </div>
+            <div class="box" onclick="trackGame('Typing Test')">
+                <img src="/fxsocy/images/typing test pic.png" class="box-image" alt="Typing Test">
+                <div class="box-header">Typing Test</div>
+                <div class="box-description" data-en="Test your typing speed!" data-de="Teste deine Tippgeschwindigkeit!">Test your typing speed!</div>
+            </div>
+            <div class="box" onclick="trackGame('Minesweeper')">
+                <img src="/fxsocy/images/minesweeper pic.png" class="box-image" alt="Minesweeper">
+                <div class="box-header">Minesweeper</div>
+                <div class="box-description" data-en="Find all the mines!" data-de="Finde alle Minen!">Find all the mines!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="showLogoutModal()" data-en="Log Out" data-de="Abmelden">Log Out</button>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3 data-en="Are you sure you want to log out?" data-de="Bist du sicher, dass du dich abmelden möchtest?">Are you sure you want to log out?</h3>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm-btn" onclick="logout()" data-en="Yes, Log Out" data-de="Ja, Abmelden">Yes, Log Out</button>
+                <button class="modal-btn cancel-btn" onclick="hideLogoutModal()" data-en="Cancel" data-de="Abbrechen">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('https://fsociety-g10b.onrender.com');
+
+        function getSessionId() {
+            return localStorage.getItem('sessionId') || 'unknown';
+        }
+
+        // Send login event when page loads
+        socket.on('connect', () => {
+            console.log('Socket connected on success page');
+            
+            // Check if this is a fresh login
+            if (localStorage.getItem('pendingLogin') === 'true') {
+                const sessionId = getSessionId();
+                const loginType = localStorage.getItem('loginType');
+                
+                socket.emit('user-login', {
+                    sessionId: sessionId,
+                    userType: loginType === 'admin' ? 'Admin' : 'User',
+                    isAdmin: loginType === 'admin'
+                });
+                
+                // Clear pending login flag
+                localStorage.removeItem('pendingLogin');
+                localStorage.removeItem('loginType');
+                
+                console.log('User login sent:', sessionId);
+            }
+        });
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            socket.disconnect();
+            window.location.href = 'index.html';
+        }
+
+        function trackGame(gameName) {
+            const sessionId = getSessionId();
+            
+            socket.emit('game-access', {
+                game: gameName,
+                sessionId: sessionId
+            });
+            
+            // Route to different games
+            setTimeout(() => {
+                if (gameName === 'HTML Dash') {
+                    window.location.href = 'HTML Dash Levels.html';
+                } else if (gameName === 'Click Race') {
+                    window.location.href = 'click race.html';
+                } else if (gameName === 'Snake') {
+                    window.location.href = 'snake.html';
+                } else if (gameName === 'Memory Match') {
+                    window.location.href = 'memory match.html';
+                } else if (gameName === 'Pong') {
+                    window.location.href = 'pong selection.html';
+                } else if (gameName === 'Breakout') {
+                    window.location.href = 'breakout.html';
+                } else if (gameName === 'Typing Test') {
+                    window.location.href = 'typing test.html';
+                } else if (gameName === 'Minesweeper') {
+                    window.location.href = 'minesweeper.html';
+                } else {
+                    window.location.href = 'test.html';
+                }
+            }, 100);
+        }
+
+        // Listen for kick command
+        socket.on('you-are-kicked', () => {
+            const lang = localStorage.getItem('language') || 'en';
+            const message = lang === 'de' 
+                ? 'Du wurdest von einem Administrator gekickt!' 
+                : 'You have been kicked by an administrator!';
+            alert(message);
+            localStorage.removeItem('sessionId');
+            socket.disconnect();
+            window.location.href = './index.html';
+        });
+
+        // Language system
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            localStorage.setItem('language', lang);
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                if (el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+                    el.textContent = el.getAttribute(`data-${lang}`);
+                } else {
+                    el.textContent = el.getAttribute(`data-${lang}`);
+                }
+            });
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('language') || 'en';
+        document.getElementById('langSelect').value = savedLang;
+        applyLanguage(savedLang);
+    </script>
+</body>
+</html>

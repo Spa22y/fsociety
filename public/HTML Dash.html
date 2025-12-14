@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing HTML Dash</title>
+    <link rel="stylesheet" href="/fxsocy/CSS/HTML Dash.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="HTML Dash Levels.html" class="back-button" data-en="← Back to Levels" data-de="← Zurück zu Levels">← Back to Levels</a>
+        <h1 id="level-title"><span data-en="Level Loading..." data-de="Level wird geladen...">Level Loading...</span></h1>
+    </header>
+
+    <main>
+        <button id="fullscreenBtn" class="fullscreen-btn" data-en="⛶ Fullscreen (F)" data-de="⛶ Vollbild (F)">⛶ Fullscreen (F)</button>
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <div id="controls">
+            <p data-en="Press SPACE or W or TAP to jump!" data-de="Drücke LEERTASTE oder W oder TIPPE zum Springen!">Press SPACE or W or TAP to jump!</p>
+        </div>
+    </main>
+
+    <script>
+        const lang = localStorage.getItem('language') || 'en';
+        
+        // Apply translations
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) el.textContent = text;
+            });
+        }
+        
+        applyLanguage(lang);
+        
+        // Note: The actual game logic would be in HTML Dash.js
+        // This template just adds translation support to the HTML structure
+    </script>
+    <script src="HTML Dash.js"></script>
+</body>
+</html>

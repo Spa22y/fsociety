@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fxsocy | Typing Test</title>
+
+    <link rel="stylesheet" href="/fxsocy/CSS/typing test.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="success.html" class="back-button" data-en="← Back to Games" data-de="← Zurück zu Spielen">← Back to Games</a>
+        <h1 data-en="TYPING TEST" data-de="TIPPTEST">TYPING TEST</h1>
+    </header>
+
+    <main>
+        <div class="game-container">
+            <div class="stats">
+                <div class="stat-item">
+                    <div data-en="Time" data-de="Zeit">Time</div>
+                    <div class="stat-value" id="timer">60</div>
+                </div>
+                <div class="stat-item">
+                    <div data-en="WPM" data-de="WPM">WPM</div>
+                    <div class="stat-value" id="wpm">0</div>
+                </div>
+                <div class="stat-item">
+                    <div data-en="Accuracy" data-de="Genauigkeit">Accuracy</div>
+                    <div class="stat-value" id="accuracy">100%</div>
+                </div>
+            </div>
+
+            <div class="text-display" id="textDisplay"></div>
+
+            <input type="text" class="input-area" id="inputArea" placeholder="Start typing..." disabled>
+
+            <button class="start-btn" id="startBtn" onclick="startTest()" data-en="Start Test" data-de="Test Starten">Start Test</button>
+
+            <div class="results" id="results"></div>
+        </div>
+    </main>
+
+    <script>
+        const lang = localStorage.getItem('language') || 'en';
+        const translations = {
+            en: {
+                testComplete: 'Test Complete!',
+                wordsPerMinute: 'Words Per Minute',
+                accuracy: 'Accuracy',
+                correctCharacters: 'Correct Characters',
+                tryAgain: 'Try Again',
+                startTyping: 'Start typing...'
+            },
+            de: {
+                testComplete: 'Test Abgeschlossen!',
+                wordsPerMinute: 'Wörter Pro Minute',
+                accuracy: 'Genauigkeit',
+                correctCharacters: 'Korrekte Zeichen',
+                tryAgain: 'Nochmal Versuchen',
+                startTyping: 'Beginne zu tippen...'
+            }
+        };
+        const t = translations[lang];
+
+        const texts = [
+            "The quick brown fox jumps over the lazy dog while the sun sets in the distance.",
+            "Programming is the art of telling another human what one wants the computer to do.",
+            "In a world where technology advances rapidly we must adapt and learn continuously.",
+            "The journey of a thousand miles begins with a single step forward into the unknown.",
+            "Life is what happens when you're busy making other plans for the distant future."
+        ];
+
+        let currentText = '';
+        let currentIndex = 0;
+        let startTime = 0;
+        let timerInterval = null;
+        let timeLeft = 60;
+        let correctChars = 0;
+        let totalChars = 0;
+
+        function startTest() {
+            currentText = texts[Math.floor(Math.random() * texts.length)];
+            currentIndex = 0;
+            correctChars = 0;
+            totalChars = 0;
+            timeLeft = 60;
+            
+            document.getElementById('inputArea').value = '';
+            document.getElementById('inputArea').disabled = false;
+            document.getElementById('inputArea').placeholder = t.startTyping;
+            document.getElementById('inputArea').focus();
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('results').classList.remove('show');
+            
+            displayText();
+            startTimer();
+        }
+
+        function displayText() {
+            const display = document.getElementById('textDisplay');
+            const input = document.getElementById('inputArea').value;
+            
+            let html = '';
+            for (let i = 0; i < currentText.length; i++) {
+                let className = 'char';
+                
+                if (i < input.length) {
+                    className += input[i] === currentText[i] ? ' correct' : ' incorrect';
+                }
+                
+                if (i === input.length) {
+                    className += ' current';
+                }
+                
+                html += `<span class="${className}">${currentText[i]}</span>`;
+            }
+            
+            display.innerHTML = html;
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timeLeft = 60 - elapsed;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endTest();
+                }
+            }, 100);
+        }
+
+        function calculateWPM() {
+            const timeElapsed = (60 - timeLeft) / 60;
+            const words = correctChars / 5;
+            return Math.round(words / timeElapsed);
+        }
+
+        function calculateAccuracy() {
+            if (totalChars === 0) return 100;
+            return Math.round((correctChars / totalChars) * 100);
+        }
+
+        function endTest() {
+            clearInterval(timerInterval);
+            document.getElementById('inputArea').disabled = true;
+            
+            const wpm = calculateWPM();
+            const accuracy = calculateAccuracy();
+            
+            document.getElementById('results').innerHTML = `
+                <h2 style="color: #00FF66;">${t.testComplete}</h2>
+                <p>${t.wordsPerMinute}: <span style="color: #FFD700;">${wpm} WPM</span></p>
+                <p>${t.accuracy}: <span style="color: #FFD700;">${accuracy}%</span></p>
+                <p>${t.correctCharacters}: <span style="color: #00FF66;">${correctChars}</span></p>
+            `;
+            document.getElementById('results').classList.add('show');
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('startBtn').textContent = t.tryAgain;
+        }
+
+        document.getElementById('inputArea').addEventListener('input', (e) => {
+            const input = e.target.value;
+            
+            if (input.length > currentText.length) {
+                e.target.value = input.slice(0, currentText.length);
+                return;
+            }
+            
+            totalChars = input.length;
+            correctChars = 0;
+            
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] === currentText[i]) {
+                    correctChars++;
+                }
+            }
+            
+            displayText();
+            
+            const wpm = calculateWPM();
+            const accuracy = calculateAccuracy();
+            
+            document.getElementById('wpm').textContent = wpm;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            
+            if (input === currentText) {
+                endTest();
+            }
+        });
+
+        // Apply translations
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) el.textContent = text;
+            });
+            document.getElementById('inputArea').placeholder = t.startTyping;
+        }
+
+        applyLanguage(lang);
+        displayText();
+    </script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'VT323', monospace;
+    background-color: #0A0F0A;
+    color: #00FF66;
+    min-height: 100vh;
+    background-image: 
+        repeating-linear-gradient(90deg, rgba(0, 255, 102, 0.1) 0px, rgba(0, 255, 102, 0.1) 1px, transparent 1px, transparent 20px),
+        repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.08) 0px, rgba(0, 255, 102, 0.08) 1px, transparent 1px, transparent 20px);
+    background-attachment: fixed;
+}
+
+.binary-stream {
+    position: fixed;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: rgba(0, 255, 102, 0.15);
+    pointer-events: none;
+    user-select: none;
+    animation: floatBinary 3s infinite alternate ease-in-out;
+    z-index: 1;
+}
+
+@keyframes floatBinary {
+    0% { transform: translateY(0px); opacity: 0.3; }
+    50% { transform: translateY(-10px); opacity: 0.5; }
+    100% { transform: translateY(0px); opacity: 0.3; }
+}
+
+header {
+    background: #0D1F0D;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #0f0;
+    position: relative;
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3em;
+    color: #00FF66;
+    text-shadow: 0 0 10px #00FF66;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #003322;
+    color: #00FF66;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    font-size: 1.5em;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background: #00FF66;
+    color: #003322;
+}
+
+main {
+    padding: 20px 20px;
+    position: relative;
+    z-index: 10;
+    max-height: calc(100vh - 100px);
+    overflow: visible;
+}
+
+.difficulty-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.difficulty-container h2 {
+    font-size: 2.5em;
+    color: #00FF66;
+    margin-bottom: 30px;
+}
+
+.difficulty-btn {
+    background: #003322;
+    color: #00FF66;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    padding: 20px 40px;
+    margin: 15px;
+    font-family: 'VT323', monospace;
+    font-size: 2em;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.difficulty-btn:hover {
+    background: #00FF66;
+    color: #003322;
+    transform: scale(1.05);
+}
+
+/* Game specific styles */
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.game-info {
+    text-align: center;
+    font-size: 1.5em;
+    color: #00FF66;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.game-info p {
+    margin: 3px 10px;
+}
+
+.start-btn {
+    display: block;
+    margin: 10px auto;
+    padding: 12px 30px;
+    background: #003322;
+    color: #00FF66;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    font-family: 'VT323', monospace;
+    font-size: 1.8em;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start-btn:hover {
+    background: #00FF66;
+    color: #003322;
+}
+
+.memory-grid {
+    display: grid;
+    gap: 8px;
+    justify-content: center;
+    margin: 10px auto;
+    max-width: 600px;
+}
+
+.memory-grid.easy {
+    grid-template-columns: repeat(3, 85px);
+}
+
+.memory-grid.medium {
+    grid-template-columns: repeat(4, 75px);
+}
+
+.memory-grid.hard {
+    grid-template-columns: repeat(5, 65px);
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    background: #0D1F0D;
+    border: 2px solid #0f0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    transition: 0.3s;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+}
+
+.memory-card:hover:not(.flipped):not(.matched) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+}
+
+.memory-card.flipped {
+    background: #003322;
+}
+
+.memory-card.matched {
+    background: #00FF66;
+    color: #000;
+    cursor: default;
+}
+
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00FF66;
+    font-size: 1.5em;
+}
+
+.card-front {
+    display: none;
+}
+
+.memory-card.flipped .card-back,
+.memory-card.matched .card-back {
+    display: none;
+}
+
+.memory-card.flipped .card-front,
+.memory-card.matched .card-front {
+    display: flex;
+}
+
+.game-over-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #0D1F0D;
+    border: 3px solid #0f0;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+}
+
+.modal-content h2 {
+    font-size: 3em;
+    color: #00FF66;
+    margin: 0 0 20px 0;
+}
+
+.modal-content p {
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+.modal-content button {
+    background: #003322;
+    color: #00FF66;
+    border: 2px solid #0f0;
+    padding: 15px 30px;
+    font-family: 'VT323', monospace;
+    font-size: 2em;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.modal-content button:hover {
+    background: #00FF66;
+    color: #003322;
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    
+    .back-button {
+        font-size: 1.2em;
+        padding: 8px 15px;
+        left: 10px;
+    }
+    
+    .difficulty-btn {
+        font-size: 1.5em;
+        padding: 15px 30px;
+    }
+    
+    .game-info {
+        font-size: 1.4em;
+    }
+    
+    .memory-grid.easy {
+        grid-template-columns: repeat(3, 80px);
+    }
+    
+    .memory-grid.medium {
+        grid-template-columns: repeat(4, 70px);
+    }
+    
+    .memory-grid.hard {
+        grid-template-columns: repeat(5, 60px);
+    }
+    
+    .memory-card {
+        font-size: 2em;
+    }
+}

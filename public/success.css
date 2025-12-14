@@ -1,0 +1,270 @@
+/* Binary background */
+.binary-stream {
+    position: absolute;
+    font-family: monospace;
+    font-size: 14px;
+    color: rgba(0, 255, 102, 0.15);
+    pointer-events: none;
+    user-select: none;
+    animation: floatBinary 3s infinite alternate ease-in-out;
+}
+
+/* small floating animation */
+@keyframes floatBinary {
+    0%   { transform: translateY(0px); opacity: 0.3; }
+    50%  { transform: translateY(-10px); opacity: 0.5; }
+    100% { transform: translateY(0px); opacity: 0.3; }
+}
+
+/* success-page */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: #0A0F0A;
+    color: #00FF66;
+    font-family: 'VT323', monospace;
+    overflow: hidden;
+}
+
+/* Only the title + container is centered */
+.content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 4em;
+    line-height: 1.2;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 2em;
+    line-height: 1.3;
+}
+
+/* The responsive grid - FIXED */
+.grid {
+    margin: 10px auto;
+    width: 90%;
+    max-width: 1300px;
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 250px));
+    gap: 20px;
+    justify-items: center;
+    justify-content: center;
+}
+
+.box {
+    position: relative;
+    z-index: 5;
+    height: 150px;
+    width: 250px;
+    max-width: 250px;
+    min-width: 250px;
+
+    background: #111;
+    border: 2px solid #0f0;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transform-origin: center center;
+    overflow: hidden;
+}
+
+.box-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 48px);
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+}
+
+.box:hover .box-image {
+    opacity: 0.8;
+}
+
+.box-header {
+    background: #003322;
+    color: #00FF66;
+    padding: 12px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 0;
+    border-top: 2px solid #0f0;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease, padding 0.3s ease;
+}
+
+/* Hide description by default */
+.box-description {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #003322;
+    color: #00FF66;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.2;
+    border-top: 2px solid #0f0;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* On hover: move title up and show description */
+.box:hover .box-header {
+    transform: translateY(-36px);
+}
+
+.box:hover .box-description {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.box:hover {
+    transform: scale(1.15);
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+/* Logout Button */
+.logout-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 25px;
+    background-color: #003322;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    color: #00FF66;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 50;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background-color: #00FF66;
+    color: #003322;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: #0D1F0D;
+    border: 2px solid #0f0;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    max-width: 400px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h3 {
+    color: #00FF66;
+    margin-bottom: 25px;
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+    line-height: 1;
+}
+
+.confirm-btn {
+    background-color: #FF5555;
+    color: #fff;
+    border-color: #FF5555;
+}
+
+.confirm-btn:hover {
+    background-color: #ff3333;
+}
+
+.cancel-btn {
+    background-color: #003322;
+    color: #00FF66;
+}
+
+.cancel-btn:hover {
+    background-color: #00FF66;
+    color: #003322;
+}

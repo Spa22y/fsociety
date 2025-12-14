@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong - Select Mode</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'VT323', monospace;
+            background-color: #0A0F0A;
+            color: #00FF66;
+            min-height: 100vh;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(0, 255, 102, 0.1) 0px, rgba(0, 255, 102, 0.1) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.08) 0px, rgba(0, 255, 102, 0.08) 1px, transparent 1px, transparent 20px);
+            background-attachment: fixed;
+        }
+
+        .binary-stream {
+            position: fixed;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            color: rgba(0, 255, 102, 0.15);
+            pointer-events: none;
+            user-select: none;
+            animation: floatBinary 3s infinite alternate ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes floatBinary {
+            0% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-10px); opacity: 0.5; }
+            100% { transform: translateY(0px); opacity: 0.3; }
+        }
+
+        header {
+            background: #0D1F0D;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #0f0;
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            color: #00FF66;
+            text-shadow: 0 0 10px #00FF66;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #003322;
+            color: #00FF66;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-size: 1.5em;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background: #00FF66;
+            color: #003322;
+        }
+
+        main {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 120px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .selection-container {
+            background: #0D1F0D;
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .selection-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #00FF66;
+            text-shadow: 0 0 10px #00FF66;
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .mode-btn {
+            padding: 20px;
+            background: #003322;
+            color: #00FF66;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-family: 'VT323', monospace;
+            font-size: 2em;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .mode-btn:hover {
+            background: #00FF66;
+            color: #003322;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+        }
+
+        .mode-description {
+            font-size: 0.7em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .back-button {
+                font-size: 1.2em;
+                padding: 8px 15px;
+            }
+            .selection-container {
+                padding: 20px;
+            }
+            .selection-title {
+                font-size: 2em;
+            }
+            .mode-btn {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="success.html" class="back-button" data-en="← Back to Games" data-de="← Zurück zu Spielen">← Back to Games</a>
+        <h1>PONG</h1>
+    </header>
+
+    <main>
+        <div class="selection-container">
+            <div class="selection-title" data-en="Select Game Mode" data-de="Spielmodus wählen">Select Game Mode</div>
+            <div class="mode-buttons">
+                <a href="pong 2 player.html" class="mode-btn">
+                    <span data-en="2 Player" data-de="2 Spieler">2 Player</span>
+                    <div class="mode-description" data-en="Play against a friend locally" data-de="Spiele lokal gegen einen Freund">Play against a friend locally</div>
+                </a>
+                <a href="pong bot selection.html" class="mode-btn">
+                    <span data-en="vs Bot" data-de="gegen Bot">vs Bot</span>
+                    <div class="mode-description" data-en="Play against AI opponent" data-de="Spiele gegen KI-Gegner">Play against AI opponent</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Language system
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (el.tagName === 'INPUT' || el.tagName === 'BUTTON' || el.tagName === 'A') {
+                    if (el.querySelector('span[data-en]') || el.querySelector('div[data-en]')) {
+                        // Don't change parent text if it has child elements with translations
+                        return;
+                    }
+                    el.textContent = text;
+                } else if (el.tagName === 'SPAN' || el.tagName === 'DIV') {
+                    el.textContent = text;
+                } else {
+                    el.textContent = text;
+                }
+            });
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('language') || 'en';
+        applyLanguage(savedLang);
+    </script>
+</body>
+</html>

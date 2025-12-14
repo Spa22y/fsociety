@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="/fxsocy/CSS/minesweeper.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="success.html" class="back-button" data-en="← Back to Games" data-de="← Zurück zu Spielen">← Back to Games</a>
+        <h1 data-en="MINESWEEPER" data-de="MINENSWEEPER">MINESWEEPER</h1>
+    </header>
+
+    <main>
+        <div class="guide">
+            <h3 data-en="How to Play:" data-de="Wie man spielt:">How to Play:</h3>
+            <ul>
+                <li><strong data-en="Left Click:" data-de="Linksklick:">Left Click:</strong> <span data-en="Reveal a cell" data-de="Zelle aufdecken">Reveal a cell</span></li>
+                <li><strong data-en="Right Click:" data-de="Rechtsklick:">Right Click:</strong> <span data-en="Flag a mine (optional)" data-de="Mine markieren (optional)">Flag a mine (optional)</span></li>
+                <li><strong data-en="Numbers:" data-de="Zahlen:">Numbers:</strong> <span data-en="Show how many mines are next to each other" data-de="Zeigen wie viele Minen nebeneinander / gegenüber sind">Show how many mines are next to each other</span></li>
+                <li><strong data-en="Goal:" data-de="Ziel:">Goal:</strong> <span data-en="Reveal all safe cells without hitting a mine!" data-de="Alle sicheren Zellen aufdecken ohne eine Mine zu treffen!">Reveal all safe cells without hitting a mine!</span></li>
+            </ul>
+        </div>
+
+        <div class="stats">
+            <div>
+                <div style="font-size: 0.6em;" data-en="Mines" data-de="Minen">Mines</div>
+                <div id="mineCount">10</div>
+            </div>
+            <div>
+                <div style="font-size: 0.6em;" data-en="Flags" data-de="Flaggen">Flags</div>
+                <div id="flagCount">0</div>
+            </div>
+            <div>
+                <div style="font-size: 0.6em;" data-en="Time" data-de="Zeit">Time</div>
+                <div id="time">0:00</div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="grid-container">
+                <div class="game-grid" id="gameGrid"></div>
+            </div>
+        </div>
+
+        <button class="start-btn" onclick="startGame()" data-en="New Game" data-de="Neues Spiel">New Game</button>
+    </main>
+
+    <script>
+        const ROWS = 10;
+        const COLS = 10;
+        const MINES = 10;
+        
+        let board = [];
+        let revealed = [];
+        let flags = [];
+        let gameOver = false;
+        let timerInterval = null;
+        let startTime = 0;
+
+        function initGame() {
+            board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+            revealed = Array(ROWS).fill().map(() => Array(COLS).fill(false));
+            flags = Array(ROWS).fill().map(() => Array(COLS).fill(false));
+            gameOver = false;
+            
+            placeMines();
+            calculateNumbers();
+            renderBoard();
+        }
+
+        function placeMines() {
+            let minesPlaced = 0;
+            while (minesPlaced < MINES) {
+                const r = Math.floor(Math.random() * ROWS);
+                const c = Math.floor(Math.random() * COLS);
+                if (board[r][c] !== -1) {
+                    board[r][c] = -1;
+                    minesPlaced++;
+                }
+            }
+        }
+
+        function calculateNumbers() {
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (board[r][c] === -1) continue;
+                    
+                    let count = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            const nr = r + dr;
+                            const nc = c + dc;
+                            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && board[nr][nc] === -1) {
+                                count++;
+                            }
+                        }
+                    }
+                    board[r][c] = count;
+                }
+            }
+        }
+
+        function renderBoard() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    if (flags[r][c]) {
+                        cell.classList.add('flagged');
+                        cell.textContent = '🚩';
+                    } else if (revealed[r][c]) {
+                        cell.classList.add('revealed');
+                        if (board[r][c] === -1) {
+                            cell.classList.add('mine');
+                            cell.textContent = '💣';
+                        } else if (board[r][c] > 0) {
+                            cell.classList.add(`num-${board[r][c]}`);
+                            cell.textContent = board[r][c];
+                        }
+                    }
+                    
+                    cell.addEventListener('click', () => revealCell(r, c));
+                    cell.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleFlag(r, c);
+                    });
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            updateStats();
+        }
+
+        function revealCell(r, c) {
+            if (gameOver || revealed[r][c] || flags[r][c]) return;
+            
+            if (!timerInterval) startTimer();
+            
+            revealed[r][c] = true;
+            
+            if (board[r][c] === -1) {
+                endGame(false);
+                return;
+            }
+            
+            if (board[r][c] === 0) {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        const nr = r + dr;
+                        const nc = c + dc;
+                        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+                            revealCell(nr, nc);
+                        }
+                    }
+                }
+            }
+            
+            renderBoard();
+            checkWin();
+        }
+
+        function toggleFlag(r, c) {
+            if (gameOver || revealed[r][c]) return;
+            
+            flags[r][c] = !flags[r][c];
+            renderBoard();
+        }
+
+        function checkWin() {
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (board[r][c] !== -1 && !revealed[r][c]) {
+                        return;
+                    }
+                }
+            }
+            endGame(true);
+        }
+
+        function endGame(won) {
+            gameOver = true;
+            clearInterval(timerInterval);
+            
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    revealed[r][c] = true;
+                }
+            }
+            
+            renderBoard();
+            
+            const lang = localStorage.getItem('language') || 'en';
+            setTimeout(() => {
+                if (won) {
+                    const winMsg = lang === 'de' ? '🎉 Du hast gewonnen! Alle Minen gefunden!' : '🎉 You Win! All mines found!';
+                    alert(winMsg);
+                } else {
+                    const loseMsg = lang === 'de' ? '💥 Spiel vorbei! Du hast eine Mine getroffen!' : '💥 Game Over! You hit a mine!';
+                    alert(loseMsg);
+                }
+            }, 300);
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('time').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function updateStats() {
+            let flagCount = 0;
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (flags[r][c]) flagCount++;
+                }
+            }
+            document.getElementById('flagCount').textContent = flagCount;
+        }
+
+        function startGame() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('time').textContent = '0:00';
+            document.getElementById('flagCount').textContent = '0';
+            initGame();
+        }
+
+        // Language system
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (el.tagName === 'INPUT' || el.tagName === 'BUTTON' || el.tagName === 'A' || el.tagName === 'H1' || el.tagName === 'H3') {
+                    el.textContent = text;
+                } else if (el.tagName === 'STRONG' || el.tagName === 'SPAN' || el.tagName === 'DIV') {
+                    el.textContent = text;
+                }
+            });
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('language') || 'en';
+        applyLanguage(savedLang);
+
+        initGame();
+    </script>
+</body>
+</html>

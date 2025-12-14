@@ -1,0 +1,200 @@
+body {
+            margin: 0;
+            padding: 0;
+            font-family: 'VT323', monospace;
+            background-color: #0A0F0A;
+            color: #00FF66;
+            min-height: 100vh;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(0, 255, 102, 0.1) 0px, rgba(0, 255, 102, 0.1) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.08) 0px, rgba(0, 255, 102, 0.08) 1px, transparent 1px, transparent 20px);
+            background-attachment: fixed;
+        }
+
+        .binary-stream {
+            position: fixed;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            color: rgba(0, 255, 102, 0.15);
+            pointer-events: none;
+            user-select: none;
+            animation: floatBinary 3s infinite alternate ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes floatBinary {
+            0% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-10px); opacity: 0.5; }
+            100% { transform: translateY(0px); opacity: 0.3; }
+        }
+
+        header {
+            background: #0D1F0D;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #0f0;
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            color: #00FF66;
+            text-shadow: 0 0 10px #00FF66;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #003322;
+            color: #00FF66;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            font-size: 1.5em;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background: #00FF66;
+            color: #003322;
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .guide {
+            background: #0D1F0D;
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .guide h3 {
+            color: #00FF66;
+            margin-top: 0;
+        }
+
+        .guide ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .grid-container {
+            display: inline-block;
+            background: #000;
+            border: 3px solid #0f0;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            margin: 0 auto;
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            background: #0D1F0D;
+            border: 2px solid #0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .cell:hover {
+            background: #003322;
+        }
+
+        .cell.revealed {
+            background: #000;
+            cursor: default;
+            border-color: #005522;
+        }
+
+        .cell.revealed:hover {
+            background: #000;
+        }
+
+        .cell.mine {
+            background: #FF5555;
+        }
+
+        .cell.flagged {
+            background: #FFD700;
+            color: #000;
+        }
+
+        .cell.num-1 { color: #00FFFF; }
+        .cell.num-2 { color: #00FF66; }
+        .cell.num-3 { color: #FFD700; }
+        .cell.num-4 { color: #FF55FF; }
+        .cell.num-5 { color: #FFA500; }
+        .cell.num-6 { color: #FF5555; }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: #003322;
+            color: #00FF66;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-family: 'VT323', monospace;
+            font-size: 2em;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            background: #00FF66;
+            color: #003322;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .back-button {
+                font-size: 1.2em;
+                padding: 8px 15px;
+            }
+            .guide {
+                font-size: 1.2em;
+            }
+            .stats {
+                font-size: 1.5em;
+            }
+            .cell {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2em;
+            }
+        }

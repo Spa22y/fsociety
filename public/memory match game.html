@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fxsocy | Memory Match</title>
+
+    <link rel="stylesheet" href="/fxsocy/CSS/memory.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="memory match.html" class="back-button">← <span data-en="Back" data-de="Zurück">Back</span></a>
+        <h1>MEMORY MATCH - <span id="difficultyName"></span></h1>
+    </header>
+
+    <main class="game-container">
+        <div class="game-info">
+            <p><span data-en="Moves" data-de="Züge">Moves</span>: <span id="moves">0</span></p>
+            <p><span data-en="Matches" data-de="Treffer">Matches</span>: <span id="matches">0</span> / <span id="totalPairs">0</span></p>
+            <p><span data-en="Time" data-de="Zeit">Time</span>: <span id="time">0</span>s</p>
+        </div>
+
+        <button class="start-btn" id="startBtn" onclick="startGame()">
+            <span data-en="Start Game" data-de="Spiel Starten">Start Game</span>
+        </button>
+
+        <div class="memory-grid" id="gameGrid"></div>
+    </main>
+
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2 data-en="Congratulations!" data-de="Glückwunsch!">Congratulations!</h2>
+            <p><span data-en="You completed the game!" data-de="Du hast das Spiel abgeschlossen!">You completed the game!</span></p>
+            <p><span data-en="Moves" data-de="Züge">Moves</span>: <span id="finalMoves">0</span></p>
+            <p><span data-en="Time" data-de="Zeit">Time</span>: <span id="finalTime">0</span>s</p>
+            <button onclick="restartGame()"><span data-en="Play Again" data-de="Nochmal Spielen">Play Again</span></button>
+            <button onclick="window.location.href='memory match.html'"><span data-en="Main Menu" data-de="Hauptmenü">Main Menu</span></button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const difficulty = urlParams.get('difficulty') || 'easy';
+        
+        const lang = localStorage.getItem('language') || 'en';
+        const translations = {
+            en: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
+            de: { easy: 'Einfach', medium: 'Mittel', hard: 'Schwer' }
+        };
+        const t = translations[lang];
+        
+        document.getElementById('difficultyName').textContent = t[difficulty];
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.textContent = el.getAttribute(`data-${lang}`);
+        });
+
+        const gridSizes = {
+            easy: { rows: 3, cols: 3, pairs: 4 },
+            medium: { rows: 4, cols: 4, pairs: 8 },
+            hard: { rows: 4, cols: 5, pairs: 10 }
+        };
+
+        const config = gridSizes[difficulty];
+        const totalPairs = config.pairs;
+        
+        document.getElementById('totalPairs').textContent = totalPairs;
+
+        const symbolSets = {
+            easy: ['🔥', '⚡', '💎', '🎮'],
+            medium: ['🔥', '⚡', '💎', '🎮', '🎯', '🎨', '🎭', '🎪'],
+            hard: ['🔥', '⚡', '💎', '🎮', '🎯', '🎨', '🎭', '🎪', '🎬', '🎸']
+        };
+        
+        const symbols = symbolSets[difficulty];
+        
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let gameStarted = false;
+        let timerInterval;
+        let timeElapsed = 0;
+
+        function initGame() {
+            const gameGrid = document.getElementById('gameGrid');
+            gameGrid.className = `memory-grid ${difficulty}`;
+            gameGrid.innerHTML = '';
+            
+            const selectedSymbols = symbols.slice(0, totalPairs);
+            cards = [...selectedSymbols, ...selectedSymbols];
+            shuffleArray(cards);
+            
+            cards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <div class="card-back">?</div>
+                    <div class="card-front">${symbol}</div>
+                `;
+                card.addEventListener('click', () => flipCard(card));
+                gameGrid.appendChild(card);
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startGame() {
+            gameStarted = true;
+            moves = 0;
+            matchedPairs = 0;
+            timeElapsed = 0;
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('matches').textContent = matchedPairs;
+            document.getElementById('time').textContent = timeElapsed;
+            document.getElementById('startBtn').style.display = 'none';
+            
+            initGame();
+            
+            timerInterval = setInterval(() => {
+                timeElapsed++;
+                document.getElementById('time').textContent = timeElapsed;
+            }, 1000);
+        }
+
+        function flipCard(card) {
+            if (!gameStarted || card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            const symbol1 = card1.dataset.symbol;
+            const symbol2 = card2.dataset.symbol;
+
+            if (symbol1 === symbol2) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('matches').textContent = matchedPairs;
+                flippedCards = [];
+
+                if (matchedPairs === totalPairs) {
+                    endGame();
+                }
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('finalTime').textContent = timeElapsed;
+            
+            setTimeout(() => {
+                document.getElementById('gameOverModal').style.display = 'flex';
+            }, 500);
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverModal').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('gameGrid').innerHTML = '';
+            gameStarted = false;
+            clearInterval(timerInterval);
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong - vs Bot</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'VT323', monospace;
+            background-color: #0A0F0A;
+            color: #00FF66;
+            min-height: 100vh;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(0, 255, 102, 0.1) 0px, rgba(0, 255, 102, 0.1) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.08) 0px, rgba(0, 255, 102, 0.08) 1px, transparent 1px, transparent 20px);
+            background-attachment: fixed;
+        }
+
+        .binary-stream {
+            position: fixed;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            color: rgba(0, 255, 102, 0.15);
+            pointer-events: none;
+            user-select: none;
+            animation: floatBinary 3s infinite alternate ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes floatBinary {
+            0% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-10px); opacity: 0.5; }
+            100% { transform: translateY(0px); opacity: 0.3; }
+        }
+
+        header {
+            background: #0D1F0D;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #0f0;
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            color: #00FF66;
+            text-shadow: 0 0 10px #00FF66;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.6em;
+        }
+
+        .difficulty-badge.easy {
+            background: #00FF66;
+            color: #003322;
+        }
+
+        .difficulty-badge.medium {
+            background: #FFD700;
+            color: #003322;
+        }
+
+        .difficulty-badge.hard {
+            background: #FF5555;
+            color: #fff;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #003322;
+            color: #00FF66;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-size: 1.5em;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background: #00FF66;
+            color: #003322;
+        }
+
+        main {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .fullscreen-btn {
+            display: block;
+            margin: 0 auto 10px;
+            padding: 10px 20px;
+            background: #003322;
+            color: #00FF66;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-family: 'VT323', monospace;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .fullscreen-btn:hover {
+            background: #00FF66;
+            color: #003322;
+        }
+
+        #gameCanvas {
+            background: #000;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        .controls {
+            text-align: center;
+            font-size: 1.5em;
+            color: #00FF66;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .back-button {
+                font-size: 1.2em;
+                padding: 8px 15px;
+                left: 10px;
+            }
+            .fullscreen-btn {
+                font-size: 1.5em;
+            }
+            .controls {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating binary numbers -->
+    <div class="binary-stream" style="top: 13%; left: 42%;">01100110</div>
+    <div class="binary-stream" style="top: 32%; left: 70%;">01110101</div>
+    <div class="binary-stream" style="top: 83%; left: 80%;">01110101</div>
+    <div class="binary-stream" style="top: 24%; left: 23%;">01101011</div>
+    <div class="binary-stream" style="top: 66%; left: 70%;">00100000</div>
+    <div class="binary-stream" style="top: 10%; left: 86%;">01110011</div>
+    <div class="binary-stream" style="top: 40%; left: 20%;">01101111</div>
+    <div class="binary-stream" style="top: 76%; left: 45%;">01100011</div>
+    <div class="binary-stream" style="top: 20%; left: 6%;">01101001</div>
+    <div class="binary-stream" style="top: 60%; left: 12%;">01100101</div>
+    <div class="binary-stream" style="top: 87%; left: 22%;">01110100</div>
+    <div class="binary-stream" style="top: 47%; left: 95%;">01111001</div>
+
+    <header>
+        <a href="pong bot selection.html" class="back-button" data-en="← Back" data-de="← Zurück">← Back</a>
+        <h1><span data-en="PONG - vs BOT" data-de="PONG - gegen BOT">PONG - vs BOT</span><span class="difficulty-badge" id="difficultyBadge"></span></h1>
+    </header>
+
+    <main>
+        <button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreen()" data-en="⛶ Fullscreen (F)" data-de="⛶ Vollbild (F)">⛶ Fullscreen (F)</button>
+
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <div class="controls">
+            <p id="controlsText" data-en="Controls: W/S or Arrow Keys | Press SPACE to start" data-de="Steuerung: W/S oder Pfeiltasten | Drücke LEERTASTE zum Starten">Controls: W/S or Arrow Keys | Press SPACE to start</p>
+        </div>
+    </main>
+
+    <script>
+        // Get difficulty from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const difficulty = urlParams.get('difficulty') || 'medium';
+        
+        // Update difficulty badge
+        const badge = document.getElementById('difficultyBadge');
+        badge.textContent = difficulty.toUpperCase();
+        badge.className = `difficulty-badge ${difficulty}`;
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const paddleWidth = 10;
+        const paddleHeight = 100;
+        const ballSize = 10;
+
+        let player1 = {
+            x: 20,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            score: 0
+        };
+
+        let player2 = {
+            x: canvas.width - 30,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            score: 0
+        };
+
+        let ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            dx: 3,
+            dy: 3,
+            size: ballSize,
+            speed: 3,
+            maxSpeed: 8
+        };
+
+        let gameRunning = false;
+        let countdown = 0;
+        let keys = {};
+        let canRestart = true;
+        let gameStarted = false; // Track if game has been started at least once
+        
+        // Bot speeds based on difficulty
+        const botSpeeds = {
+            easy: 3,
+            medium: 4.5,
+            hard: 6
+        };
+        const botSpeed = botSpeeds[difficulty];
+
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = color;
+            ctx.fillRect(x, y, w, h);
+            ctx.shadowBlur = 0;
+        }
+
+        function drawCircle(x, y, radius, color) {
+            ctx.fillStyle = color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = color;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawNet() {
+            ctx.strokeStyle = '#00FF66';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawScore() {
+            ctx.font = '48px VT323';
+            ctx.fillStyle = '#00FF66';
+            ctx.textAlign = 'center';
+            ctx.fillText(player1.score, canvas.width / 4, 60);
+            ctx.fillText(player2.score, (canvas.width / 4) * 3, 60);
+        }
+
+        function updatePaddles() {
+            // Player controls
+            if ((keys['w'] || keys['W'] || keys['ArrowUp']) && player1.y > 0) {
+                player1.y -= 6;
+            }
+            if ((keys['s'] || keys['S'] || keys['ArrowDown']) && player1.y < canvas.height - player1.height) {
+                player1.y += 6;
+            }
+            
+            // Bot AI
+            const ballCenter = ball.y;
+            const paddleCenter = player2.y + player2.height / 2;
+            
+            if (ballCenter < paddleCenter - 10) {
+                player2.y -= botSpeed;
+            } else if (ballCenter > paddleCenter + 10) {
+                player2.y += botSpeed;
+            }
+            
+            player2.y = Math.max(0, Math.min(canvas.height - player2.height, player2.y));
+        }
+
+        function updateBall() {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Wall collisions
+            if (ball.y - ball.size < 0 || ball.y + ball.size > canvas.height) {
+                ball.dy = -ball.dy;
+            }
+
+            // Player 1 paddle collision
+            if (ball.x - ball.size < player1.x + player1.width &&
+                ball.y > player1.y &&
+                ball.y < player1.y + player1.height) {
+                ball.dx = Math.abs(ball.dx);
+                
+                if (ball.speed < ball.maxSpeed) {
+                    ball.speed += 0.2;
+                    ball.dx = ball.dx > 0 ? ball.speed : -ball.speed;
+                    ball.dy = ball.dy > 0 ? ball.speed : -ball.speed;
+                }
+            }
+
+            // Player 2 (bot) paddle collision
+            if (ball.x + ball.size > player2.x &&
+                ball.y > player2.y &&
+                ball.y < player2.y + player2.height) {
+                ball.dx = -Math.abs(ball.dx);
+                
+                if (ball.speed < ball.maxSpeed) {
+                    ball.speed += 0.2;
+                    ball.dx = ball.dx > 0 ? ball.speed : -ball.speed;
+                    ball.dy = ball.dy > 0 ? ball.speed : -ball.speed;
+                }
+            }
+
+            // Score updates
+            if (ball.x < 0) {
+                player2.score++;
+                resetBall();
+            }
+            if (ball.x > canvas.width) {
+                player1.score++;
+                resetBall();
+            }
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speed = 3;
+            ball.dx = (Math.random() > 0.5 ? 1 : -1) * 3;
+            ball.dy = (Math.random() > 0.5 ? 1 : -1) * 3;
+            countdown = 3;
+            gameRunning = false;
+            canRestart = false; // Prevent restarting during countdown
+            
+            let countdownTimer = setInterval(() => {
+                countdown--;
+                draw();
+                if (countdown === 0) {
+                    clearInterval(countdownTimer);
+                    gameRunning = true;
+                    canRestart = true; // Allow restarting after countdown
+                }
+            }, 1000);
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawNet();
+            drawScore();
+            drawRect(player1.x, player1.y, player1.width, player1.height, '#00FF66');
+            drawRect(player2.x, player2.y, player2.width, player2.height, '#FF5555');
+            drawCircle(ball.x, ball.y, ball.size, '#FFD700');
+            
+            if (countdown > 0) {
+                ctx.font = '96px VT323';
+                ctx.fillStyle = '#FFD700';
+                ctx.textAlign = 'center';
+                ctx.fillText(countdown, canvas.width / 2, canvas.height / 2);
+            }
+        }
+
+        function gameLoop() {
+            draw();
+            
+            if (!gameRunning) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+
+            updatePaddles();
+            updateBall();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            if (!canRestart || gameStarted) return; // Prevent multiple starts
+            
+            gameStarted = true;
+            canRestart = false;
+            player1.score = 0;
+            player2.score = 0;
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speed = 3;
+            ball.dx = 3;
+            ball.dy = 3;
+            countdown = 3;
+            gameRunning = false;
+            
+            let countdownTimer = setInterval(() => {
+                countdown--;
+                if (countdown === 0) {
+                    clearInterval(countdownTimer);
+                    gameRunning = true;
+                    canRestart = true;
+                }
+            }, 1000);
+            
+            gameLoop();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                if (!gameRunning && canRestart && !gameStarted) {
+                    startGame();
+                }
+            }
+
+            if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Touch controls
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const canvasY = touch.clientY - rect.top;
+            
+            player1.y = canvasY - player1.height / 2;
+            player1.y = Math.max(0, Math.min(canvas.height - player1.height, player1.y));
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            if (!gameRunning && canRestart && !gameStarted) {
+                startGame();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                canvas.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Initial draw with start message
+        draw();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '48px VT323';
+        ctx.fillStyle = '#00FF66';
+        ctx.textAlign = 'center';
+        const lang = localStorage.getItem('language') || 'en';
+        const titleText = lang === 'de' ? `PONG - gegen BOT (${difficulty.toUpperCase()})` : `PONG - vs BOT (${difficulty.toUpperCase()})`;
+        ctx.fillText(titleText, canvas.width / 2, canvas.height / 2 - 40);
+        ctx.font = '32px VT323';
+        const startText = lang === 'de' ? 'Drücke LEERTASTE zum Starten' : 'Press SPACE to start';
+        ctx.fillText(startText, canvas.width / 2, canvas.height / 2 + 20);
+
+        // Language system
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (el.tagName === 'INPUT' || el.tagName === 'BUTTON' || el.tagName === 'A') {
+                    el.textContent = text;
+                } else {
+                    el.textContent = text;
+                }
+            });
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('language') || 'en';
+        applyLanguage(savedLang);
+    </script>
+</body>
+</html>

@@ -33,10 +33,7 @@ io.on('connection', (socket) => {
   socket.on('user-login', (data) => {
     const sessionId = data.sessionId;
     const userType = data.userType;
-    const timestamp = new Date().toLocaleString('de-DE', { 
-      timeZone: 'Europe/Berlin',
-      hour12: false 
-    });
+    const timestamp = new Date().toLocaleString();
 
     // Add to active users
     activeUsers.set(sessionId, {
@@ -44,8 +41,8 @@ io.on('connection', (socket) => {
       type: userType,
       timestamp: timestamp,
       kicked: false
-    });
 
+    });
     // Add to login history
     loginHistory.push({
       sessionId: sessionId,
@@ -61,16 +58,11 @@ io.on('connection', (socket) => {
     })));
 
     io.emit('login-history-update', loginHistory);
-
     console.log(`User logged in: ${userType} (${sessionId})`);
   });
-
   // Game access tracking
   socket.on('game-access', (data) => {
-    const timestamp = new Date().toLocaleString('de-DE', { 
-      timeZone: 'Europe/Berlin',
-      hour12: false 
-    });
+    const timestamp = new Date().toLocaleString();
     gameHistory.push({
       game: data.game,
       sessionId: data.sessionId,
@@ -87,6 +79,7 @@ io.on('connection', (socket) => {
       sessionId: id,
       ...user
     })));
+
     socket.emit('login-history-update', loginHistory);
     socket.emit('game-history-update', gameHistory);
   });
@@ -95,13 +88,12 @@ io.on('connection', (socket) => {
   socket.on('kick-user', (sessionId) => {
     const user = activeUsers.get(sessionId);
     if (user) {
+
       // Mark as kicked
       user.kicked = true;
       activeUsers.set(sessionId, user);
-
       // Send kick command to that specific user
       io.to(user.socketId).emit('you-are-kicked');
-
       // Update all admins
       io.emit('user-list-update', Array.from(activeUsers.entries()).map(([id, user]) => ({
         sessionId: id,
@@ -125,10 +117,12 @@ io.on('connection', (socket) => {
 
   // User disconnect
   socket.on('disconnect', () => {
+
     // Find and remove user by socket ID
     for (let [sessionId, user] of activeUsers.entries()) {
       if (user.socketId === socket.id) {
         activeUsers.delete(sessionId);
+
         io.emit('user-list-update', Array.from(activeUsers.entries()).map(([id, user]) => ({
           sessionId: id,
           ...user
